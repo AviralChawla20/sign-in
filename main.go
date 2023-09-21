@@ -19,12 +19,22 @@ func main() {
 	}
 	defer api.CloseDB()
 	// Define CORS options to allow any origin, methods, and headers
-	corsOptions := handlers.AllowedOrigins([]string{"*"})
+	//corsOptions := handlers.AllowedOrigins([]string{"*"})
 
 	r := mux.NewRouter()
 
-	// Apply the CORS middleware to your router
-	cors := handlers.CORS(corsOptions)(r)
+	// Define CORS options to allow specific origins, methods, and headers
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	allowedHeaders := handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
+
+	// Apply the CORS middleware to your router with the defined options
+	cors := handlers.CORS(
+		allowedOrigins,
+		allowedMethods,
+		allowedHeaders,
+		handlers.ExposedHeaders([]string{"Content-Type", "Authorization"}),
+	)(r)
 
 	// Define your API routes
 	// r.HandleFunc("/send-email", sendEmailHandler).Methods("POST")
