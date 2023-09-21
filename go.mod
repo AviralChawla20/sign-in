@@ -9,3 +9,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	golang.org/x/crypto v0.13.0
 )
+
+require (
+	github.com/felixge/httpsnoop v1.0.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+)
