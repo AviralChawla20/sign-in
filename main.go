@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Configure the database connection
-	dbConnStr := "sql8645907:N5jq6Eb4Su@tcp(sql8.freemysqlhosting.net:3306)/sql8645907"
+	dbConnStr := "sql12647981:XM51KVKzDA@tcp(sql12.freemysqlhosting.net:3306)/sql12647981"
 
 	if err := api.InitializeDB(dbConnStr); err != nil {
 		panic(err)
