@@ -2,9 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
-
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 )
 
 // SigninHandler handles user sign-in
@@ -20,20 +19,29 @@ func SigninHandler(w http.ResponseWriter, r *http.Request) {
 	// Query the database to find the user by email
 	user, err := FindUserByEmail(inputUser.Email)
 	if err != nil {
-		http.Error(w, "User not found", http.StatusUnauthorized)
+		// If the user is not found, return an error response in JSON format
+		errorResponse := ErrorResponse{Message: "User not found"}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
 
 	// Compare passwords
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(inputUser.Password))
 	if err != nil {
-		http.Error(w, "Invalid password", http.StatusUnauthorized)
+		// If the password is invalid, return an error response in JSON format
+		errorResponse := ErrorResponse{Message: "Invalid password"}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
 
 	// Respond with success message
 	response := map[string]interface{}{"message": "Sign in successful"}
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
