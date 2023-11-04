@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -30,13 +31,21 @@ func CloseDB() {
 	}
 }
 
+// ErrorResponse represents an error response in JSON format
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 // FindUserByEmail finds a user by email
 func FindUserByEmail(email string) (*User, error) {
 	var user User
 	query := "SELECT email, password FROM users WHERE email = ?"
 	err := db.QueryRow(query, email).Scan(&user.Email, &user.Password)
 	if err != nil {
-		return nil, errors.New("User not found")
+		// If the user is not found, return an error response in JSON format
+		errorResponse := ErrorResponse{Message: "User not found"}
+		errJSON, _ := json.Marshal(errorResponse)
+		return nil, errors.New(string(errJSON))
 	}
 	return &user, nil
 }
